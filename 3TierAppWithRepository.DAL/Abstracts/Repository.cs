@@ -11,25 +11,25 @@ namespace _3TierAppWithRepository.DAL.Abstracts
 {
     public abstract class Repository<T> : IRepository<T> where T : BaseEntity
     {
-        private DbContext _db;
-        private IDbSet<T> _dbset;
+        protected DbContext _db;
+        protected IDbSet<T> _dbset;
         public Repository(DbContext context)
         {
             _db = context;
             _dbset = context.Set<T>();
         }
 
-        public T Add(T entity)
+        public virtual T Add(T entity)
         {
             return _dbset.Add(entity);
         }
 
-        public T Delete(T entity)
+        public virtual T Delete(T entity)
         {
             return _dbset.Remove(entity);
         }
 
-        public void Edit(T entity)
+        public virtual void Edit(T entity)
         {
             _db.Entry(entity).State = EntityState.Modified;
         }
@@ -39,7 +39,7 @@ namespace _3TierAppWithRepository.DAL.Abstracts
             return _dbset.Where(predicate).AsEnumerable();
         }
 
-        public IEnumerable<T> GetAll()
+        public virtual IEnumerable<T> GetAll()
         {
             return _dbset.AsEnumerable<T>();
         }
