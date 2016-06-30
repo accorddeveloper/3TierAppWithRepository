@@ -9,9 +9,10 @@ using System.Threading.Tasks;
 
 namespace _3TierAppWithRepository.DAL
 {
-    public sealed class UnitOfWork : IUnitOfWork
+    public class UnitOfWork : IUnitOfWork
     {
         private DbContext _context;
+        private bool disposed = false;
 
         public UnitOfWork(DbContext context)
         {
@@ -31,7 +32,19 @@ namespace _3TierAppWithRepository.DAL
 
         public void Dispose()
         {
-            _context.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed)
+                return;
+
+            if (disposing)
+                _context.Dispose();
+
+            disposed = true;
         }
     }
 }

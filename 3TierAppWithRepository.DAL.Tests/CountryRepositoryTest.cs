@@ -1,4 +1,5 @@
-﻿using _3TierAppWithRepository.DAL.Repositories;
+﻿using _3TierAppWithRepository.DAL.Entities;
+using _3TierAppWithRepository.DAL.Repositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -37,5 +38,45 @@ namespace _3TierAppWithRepository.DAL.Tests
             Assert.AreEqual("Spain", result[3].Name);
         }
 
+        [TestMethod]
+        public void Country_Repository_Get_ById()
+        {
+            var result = repo.GetById(1);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual("USA",result.Name);
+        }
+
+        [TestMethod]
+        public void Country_Repository_Add()
+        {
+            var oldList = repo.GetAll().ToList();
+            var country = new Country() { Name = "France", };
+            var result = repo.Add(country);
+            context.SaveChanges();
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual("France", result.Name);
+
+            var newList = repo.GetAll().ToList();
+            Assert.IsNotNull(newList);
+            Assert.AreEqual(oldList.Count+1, newList.Count);
+        }
+
+        [TestMethod]
+        public void Country_Repository_Delete()
+        {
+            var oldList = repo.GetAll().ToList();
+            var country = repo.GetById(1);
+            var result = repo.Delete(country);
+            context.SaveChanges();
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual("USA", result.Name);
+
+            var newList = repo.GetAll().ToList();
+            Assert.IsNotNull(newList);
+            Assert.AreEqual(oldList.Count-1, newList.Count);
+        }
     }
 }
